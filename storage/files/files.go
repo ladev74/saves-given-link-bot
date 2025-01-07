@@ -18,8 +18,6 @@ type Storage struct {
 
 const defaultPerm = 0744
 
-var ErrNoSavedMessage = errors.New("no saved page")
-
 func New(basePath string) Storage {
 	return Storage{basePath: basePath}
 }
@@ -64,7 +62,7 @@ func (s Storage) PickRandom(userName string) (page *storage.Page, err error) {
 	}
 
 	if len(files) == 0 {
-		return nil, ErrNoSavedMessage
+		return nil, storage.ErrNoSavedMessage
 	}
 
 	//rand.Seed(time.Now().UnixNano())
@@ -103,7 +101,7 @@ func (s Storage) IsExists(p *storage.Page) (bool, error) {
 	switch _, err = os.Stat(path); {
 	case errors.Is(err, os.ErrNotExist):
 		return false, nil
-		
+
 	case err != nil:
 		msg := fmt.Sprintf("can't check if file %s exists", path)
 		return false, e.Wrap(msg, err)
