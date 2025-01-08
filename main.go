@@ -11,7 +11,7 @@ import (
 
 const (
 	tgBotGost   = "api.telegram.org"
-	storagePath = "storage"
+	storagePath = "file_storage"
 	bathSize    = 100
 )
 
