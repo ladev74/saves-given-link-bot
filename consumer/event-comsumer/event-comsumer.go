@@ -20,7 +20,7 @@ func New(fetcher events.Fetcher, processor events.Processor, bathSize int) Consu
 	}
 }
 
-func (c Consumer) Start() {
+func (c Consumer) Start() error {
 	for {
 		gotEvents, err := c.fetcher.Fetch(c.bathSize)
 		if err != nil {
@@ -35,5 +35,26 @@ func (c Consumer) Start() {
 			continue
 		}
 
+		if err := c.handleEvents(gotEvents); err != nil {
+			log.Print(err)
+
+			continue
+		}
 	}
+}
+
+// распараллелить
+func (c *Consumer) handleEvents(events []events.Event) error {
+	for _, event := range events {
+		//sync.WaitGroup{}
+		log.Printf("got new events: %s", event.Text)
+
+		if err := c.processor.Process(event); err != nil {
+			log.Printf("can't handle event: %s", event.Text)
+
+			continue
+		}
+	}
+
+	return nil
 }

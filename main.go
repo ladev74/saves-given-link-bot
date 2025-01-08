@@ -3,20 +3,32 @@ package main
 import (
 	"flag"
 	"log"
-	"saves-given-link-bot/clients/telegram"
+	tgClient "saves-given-link-bot/clients/telegram"
+	eventcomsumer "saves-given-link-bot/consumer/event-comsumer"
+	"saves-given-link-bot/events/telegram"
+	"saves-given-link-bot/storage/files"
 )
 
 const (
-	tgBotGost = "api.telegram.org"
+	tgBotGost   = "api.telegram.org"
+	storagePath = "storage"
+	bathSize    = 100
 )
 
 func main() {
-	client := telegram.New(tgBotGost, mustToken())
+	eventProcessor := telegram.New(tgClient.New(tgBotGost, mustToken()), files.New(storagePath))
 
+	log.Print("service started")
+
+	consumer := eventcomsumer.New(eventProcessor, eventProcessor, bathSize)
+
+	if err := consumer.Start(); err != nil {
+		log.Fatal("service is stopped", err)
+	}
 }
 
 func mustToken() string {
-	token := flag.String("bot-token", "", "token for access for telegram bot")
+	token := flag.String("tg-bot-token", "", "token for access for telegram bot")
 
 	flag.Parse()
 
