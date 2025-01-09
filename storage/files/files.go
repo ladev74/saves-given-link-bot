@@ -59,7 +59,10 @@ func (s Storage) PickRandom(userName string) (page *storage.Page, err error) {
 	//мой кусок
 	if _, err := os.Stat(path); err != nil {
 		if os.IsNotExist(err) {
-			return nil, storage.ErrNoSavedMessage
+			//	if err := s.Save(page); err != nil {
+			//	return nil, err
+			//}
+			return nil, storage.ErrNoSavedPages
 		}
 	}
 
@@ -69,7 +72,7 @@ func (s Storage) PickRandom(userName string) (page *storage.Page, err error) {
 	}
 
 	if len(files) == 0 {
-		return nil, storage.ErrNoSavedMessage
+		return nil, storage.ErrNoSavedPages
 	}
 
 	//rand.Seed(time.Now().UnixNano())
