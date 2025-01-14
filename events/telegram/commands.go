@@ -11,9 +11,10 @@ import (
 )
 
 const (
-	RndCmd   = "/rnd"
-	HelpCmd  = "/help"
-	StartCmd = "/start"
+	RndCmd    = "/rnd"
+	HelpCmd   = "/help"
+	StartCmd  = "/start"
+	PrintList = "/print"
 )
 
 func (p *Processor) doCmd(text string, chatID int, userName string) error {
@@ -32,6 +33,8 @@ func (p *Processor) doCmd(text string, chatID int, userName string) error {
 		return p.sendHelp(chatID)
 	case StartCmd:
 		return p.sendHello(chatID)
+	case PrintList:
+		return p.printList(chatID, userName)
 	default:
 		return p.tg.SendMessage(chatID, msgUnknownCommand)
 	}
@@ -81,6 +84,21 @@ func (p *Processor) sendRandom(chatID int, userName string) (err error) {
 	}
 
 	return p.storage.Remove(context.Background(), page)
+}
+
+func (p *Processor) printList(chatID int, userName string) (err error) {
+	defer func() { err = e.WrapIfErr("can't do command: can't print the list", err) }()
+
+	page, err := p.storage.PrintList(context.Background(), userName)
+	if err != nil {
+		return err
+	}
+
+	if err := p.tg.SendMessage(chatID, page.URL); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (p *Processor) sendHelp(chatID int) error {

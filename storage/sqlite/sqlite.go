@@ -58,6 +58,26 @@ func (s *Storage) PickRandom(ctx context.Context, username string) (*storage.Pag
 	}, nil
 }
 
+func (s *Storage) PrintList(ctx context.Context, username string) (*storage.Page, error) {
+	q := `SELECT url FROM pages WHERE user_name = ?`
+
+	var url string
+
+	err := s.db.QueryRowContext(ctx, q, username).Scan(&url)
+	if err == sql.ErrNoRows {
+		return nil, storage.ErrNoSavedPages
+	}
+
+	if err != nil {
+		return nil, fmt.Errorf("can't print the list: %w", err)
+	}
+
+	return &storage.Page{
+		URL:      url,
+		UserName: username,
+	}, nil
+}
+
 // Remove removes page from storage.
 func (s *Storage) Remove(ctx context.Context, page *storage.Page) error {
 	q := `DELETE FROM pages WHERE url = ? AND user_name = ?`
