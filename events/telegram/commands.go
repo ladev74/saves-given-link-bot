@@ -94,6 +94,10 @@ func (p *Processor) printList(chatID int, userName string) (err error) {
 		return err
 	}
 
+	if errors.Is(err, storage.ErrNoSavedPages) {
+		return p.tg.SendMessage(chatID, msgNoSavedPages)
+	}
+
 	if err := p.tg.SendMessage(chatID, page.URL); err != nil {
 		return err
 	}

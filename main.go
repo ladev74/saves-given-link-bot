@@ -1,13 +1,12 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"log"
 	tgClient "saves-given-link-bot/clients/telegram"
 	eventcomsumer "saves-given-link-bot/consumer/event-comsumer"
 	"saves-given-link-bot/events/telegram"
-	"saves-given-link-bot/storage/sqlite"
+	"saves-given-link-bot/storage/files"
 )
 
 const (
@@ -18,15 +17,7 @@ const (
 )
 
 func main() {
-	//s := files.New(storagePath)
-	s, err := sqlite.New(storageSqlitePath)
-	if err != nil {
-		log.Fatal("can't connect to storage", err)
-	}
-
-	if err := s.Init(context.TODO()); err != nil {
-		log.Fatal("can't init storage", err)
-	}
+	s := files.New(storagePath)
 
 	eventProcessor := telegram.New(tgClient.New(tgBotGost, mustToken()), s)
 

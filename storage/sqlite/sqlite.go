@@ -60,9 +60,10 @@ func (s *Storage) PickRandom(ctx context.Context, username string) (*storage.Pag
 
 func (s *Storage) PrintList(ctx context.Context, username string) (*storage.Page, error) {
 	q := `SELECT url FROM pages WHERE user_name = ?`
+	//q := `SELECT * FROM pages`
 
 	var url string
-
+	//err := s.db.QueryRowContext(ctx, q).Scan(&url)
 	err := s.db.QueryRowContext(ctx, q, username).Scan(&url)
 	if err == sql.ErrNoRows {
 		return nil, storage.ErrNoSavedPages
