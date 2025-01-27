@@ -17,7 +17,16 @@ const (
 )
 
 func main() {
-	s := files.New(storageSqlitePath)
+	//s := files.New(storagePath)
+		
+	s, err := sqlite.New(storageSqlitePath)
+	if err != nil {
+		log.Fatal("can't connect to storage", err)
+	}
+
+	if err := s.Init(context.TODO()); err != nil {
+		log.Fatal("can't init storage", err)
+	}
 
 	eventProcessor := telegram.New(tgClient.New(tgBotGost, mustToken()), s)
 
