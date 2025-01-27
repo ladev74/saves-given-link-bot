@@ -17,7 +17,7 @@ const (
 )
 
 func main() {
-	s := files.New(storagePath)
+	s := files.New(storageSqlitePath)
 
 	eventProcessor := telegram.New(tgClient.New(tgBotGost, mustToken()), s)
 
