@@ -1,12 +1,13 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"log"
 	tgClient "saves-given-link-bot/clients/telegram"
 	eventcomsumer "saves-given-link-bot/consumer/event-comsumer"
 	"saves-given-link-bot/events/telegram"
-	"saves-given-link-bot/storage/files"
+	"saves-given-link-bot/storage/sqlite"
 )
 
 const (
@@ -18,7 +19,7 @@ const (
 
 func main() {
 	//s := files.New(storagePath)
-		
+
 	s, err := sqlite.New(storageSqlitePath)
 	if err != nil {
 		log.Fatal("can't connect to storage", err)
