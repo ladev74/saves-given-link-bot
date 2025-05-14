@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"log"
+
 	tgClient "saves-given-link-bot/clients/telegram"
 	eventcomsumer "saves-given-link-bot/consumer/event-comsumer"
 	"saves-given-link-bot/events/telegram"
@@ -11,7 +12,7 @@ import (
 )
 
 const (
-	tgBotGost         = "api.telegram.org"
+	tgBotHost         = "api.telegram.org"
 	storagePath       = "file_storage"
 	storageSqlitePath = "data/sqlite/storage.db"
 	bathSize          = 100
@@ -29,7 +30,7 @@ func main() {
 		log.Fatal("can't init storage", err)
 	}
 
-	eventProcessor := telegram.New(tgClient.New(tgBotGost, mustToken()), s)
+	eventProcessor := telegram.New(tgClient.New(tgBotHost, mustToken()), s)
 
 	log.Print("service started")
 
